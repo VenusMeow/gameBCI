@@ -16,25 +16,84 @@ For now, we will pause the recording of data until the computation is done
 and wait for the user to resume the calculation....
 
 */
-var catLabel = ["left","right","rotating clockwise","rotating counter-clockwise"];
-function startTimer(){
-  document.getElementById("result").innerHTML = "";
+var catLabel = ["left","right","clockwise","counter-clockwise"];
+brainwavedata = "";
+datatosave = "";
+datacounter = 0;
+
+function saveData(){
+  window.open('data:text/csv;charset=utf-8,' + escape(datatosave));
+  datatosave = "";
+}
+
+function trainExperiment(){
+  dirSet = Number(document.getElementById("selection").value);
+  time = Number(document.getElementById("traintime").value);
   totals.fill(0);
   totalCount=0;
   log = [];
-  var timeleft = 5;
+  brainwavedata = "";
+  if (dirSet===1){
+    category = 0;
+  } else if (dirSet===2){
+    category = 2;
+  }
+  document.getElementById("alert").innerHTML = "Imagine to the "+catLabel[category] + " !";
+  var timeleft = time*5000;
   var intervalTimer = setInterval(function(){
-  document.getElementById("progressBar").value = 5 - --timeleft;
+  pushCategoryInfo();
+  changeDirection();
+  timeleft-=5000;
   if(timeleft <= 0){
-    pushCategoryInfo();
+    document.getElementById("alert").innerHTML = "Train finished!";
     clearInterval(intervalTimer);
   }
-  },1000);
+},5000);
 }
 
 
+function testExperiment(){
+  dirSet = Number(document.getElementById("selection").value);
+  time = Number(document.getElementById("testtime").value);
+  totals.fill(0);
+  totalCount=0;
+  log = [];
+  brainwavedata = "";
+  if (dirSet===1){
+    category = 0;
+  } else if (dirSet===2){
+    category = 2;
+  }
+  document.getElementById("alert").innerHTML = "Imagine to the "+catLabel[category] + " !";
+  var timeleft = time*5000;
+  var intervalTimer = setInterval(function(){
+  pushCategoryInfo();
+  compareCategory();
+  changeDirection();
+  timeleft-=5000;
+  if(timeleft <= 0){
+    document.getElementById("alert").innerHTML = "Test finished!";
+    clearInterval(intervalTimer);
+  }
+},5000);
+}
+
+
+function changeDirection(){
+  if (category===0){
+    category = 1;
+  } else if (category===1){
+    category = 0;
+  } else if (category===2){
+    category = 3;
+  } else if (category===3){
+    category = 2;
+  }
+  document.getElementById("alert").innerHTML = "Imagine to the "+catLabel[category] + " !";
+}
+
 function pushCategoryInfo(){
-  var cat = category.value;
+  var cat = category;
   for (let j = 0; j<average.length; j++){
     average[j] = totals[j]/totalCount;
     // we calculates average for each electrode independently
@@ -42,7 +101,7 @@ function pushCategoryInfo(){
   catEntry = {cat:cat,start:lastIndex,end:count,avg:average};
   lastIndex = count;
   log.push(catEntry);
-  console.log(JSON.stringify(log));
+  //console.log(JSON.stringify(log));
   // prints out the average in the console...
 
   // we also keep a history array that contains all of the averages
@@ -54,8 +113,9 @@ function pushCategoryInfo(){
   logHistory.push(historyLog);
   //console.log(JSON.stringify(logHistory));
 
-  document.getElementById("result").innerHTML = "Updated data for direction " + catLabel[cat] +"!";
-
+  //document.getElementById("result").innerHTML = "Updated data for direction " + catLabel[cat] +"!";
+  datatosave = datatosave.concat(brainwavedata);
+  brainwavedata = "";
   // reset the totals array and average array
   totals.fill(0);
   totalCount=0;
@@ -95,8 +155,7 @@ function compareCategory() {
       dis = 0;
 
     }
-  document.getElementById("result").innerHTML = "I think you were thinking towards " + catLabel[catP] +"!";
-  // prints out the predicted result to the screen
+  console.log(catLabel[catP]);
 }
 
 
@@ -105,6 +164,8 @@ count=0;
 brainwaves = [];
 log = [];
 logHistory = [];
+category = -1;
+results = [];
 
 $(function(){
   /*
@@ -220,6 +281,7 @@ $(function(){
 
       if (band=="theta") {
         brainwaves.push(x);
+        brainwavedata = brainwavedata.concat(x.toString()+"\n");
         count++;
         // process the complete 20 dim vector
 	      //console.log("x: " + JSON.stringify(x));

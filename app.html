@@ -29,7 +29,6 @@
 </head>
 
 <body>
-
 <audio src="1.wav" id="audio1" name="audio1">
   <p>Your browser does not support the <code>audio</code> element.</p>
 </audio>
@@ -48,32 +47,29 @@
 
 
 <h1> Direction Imagination Detector</h1>
-<select id="category" >
-  <option value="0">left</option>
-  <option value="1">right</option>
-  <option value="2">rotating clockwise</option>
-  <option value="3">rotating counter-clockwise</option>
+<p>
+<select id = "selection">
+  <option value=1>Left vs Right</option>
+  <option value=2>Clockwise vs Counter-clockwise</option>
 </select>
+</p>
+<p>Training time: <input id="traintime" type="number"></p>
+<p>Testing time: <input id="testtime" type="number"></p>
+<p>
+<button id ="trainExperiment" class="btn btn-lg btn-info" onclick="trainExperiment()">Train</button>
+<button id ="testExperiment" class="btn btn-lg btn-info" onclick="testExperiment()">Test</button>
+</p>
+<p>
+<button id ="saveData" class="btn btn-lg btn-info" onclick="saveData()">Save</button>
+</p>
+</br>
 
-</br>
-</br>
-<button id="startTimer" class="btn btn-lg btn-info" onclick="startTimer()">Start Timer</button>
-<progress value="0" max="5" id="progressBar"></progress>
-</br>
-</br>
-<!-- <button id="submitCategory" class="btn btn-lg btn-info" onclick="pushCategoryInfo()">Submit</button> -->
-<button id="compareCategory" class="btn btn-lg btn-info" onclick="compareCategory()">Compare</button>
-</br>
-<p id="result"></p>
-
-</br>
-</br>
-</br>
+<center><p id="alert" >Notification</p></center>
 </br>
 </br>
 <img src = "cart.png">
 
 
-
+<p id = "result"></p>
 </div>
 </body> </html>
