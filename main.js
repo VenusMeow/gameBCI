@@ -16,7 +16,7 @@ For now, we will pause the recording of data until the computation is done
 and wait for the user to resume the calculation....
 
 */
-var catLabel = ["left","right","clockwise","counter-clockwise"];
+var catLabel = ["left","right","clockwise","counter-clockwise","rotating","straight"];
 brainwavedata = "";
 datatosave = "";
 datacounter = 0;
@@ -24,6 +24,7 @@ datacounter = 0;
 function saveData(){
   window.open('data:text/csv;charset=utf-8,' + escape(datatosave));
   datatosave = "";
+  logHistory = "";
 }
 
 function trainExperiment(){
@@ -37,6 +38,8 @@ function trainExperiment(){
     category = 0;
   } else if (dirSet===2){
     category = 2;
+  } else if (dirSet===3){
+    category = 4;
   }
   document.getElementById("alert").innerHTML = "Imagine to the "+catLabel[category] + " !";
   var timeleft = time*5000;
@@ -63,6 +66,8 @@ function testExperiment(){
     category = 0;
   } else if (dirSet===2){
     category = 2;
+  } else if (dirSet===3){
+    category = 4;
   }
   document.getElementById("alert").innerHTML = "Imagine to the "+catLabel[category] + " !";
   var timeleft = time*5000;
@@ -88,6 +93,10 @@ function changeDirection(){
     category = 3;
   } else if (category===3){
     category = 2;
+  } else if (category===4){
+    category = 5;
+  } else if (category===5){
+    category = 4;
   }
   document.getElementById("alert").innerHTML = "Imagine to the "+catLabel[category] + " !";
 }
